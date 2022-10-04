@@ -8,9 +8,7 @@ In BitAlign, we design a new bitvector-based alignment approach, which is amenab
 
 ## Datasets
 
-All our prepared datasets can be downloaded from [this link](https://drive.google.com/file/d/18eSrcC1mCRCy9TUI2xvq8MH3mWykEunV/view?usp=sharing). 
-
-The unzipped directory has the following structure:
+All our prepared datasets can be downloaded from [this link](https://drive.google.com/file/d/18eSrcC1mCRCy9TUI2xvq8MH3mWykEunV/view?usp=sharing). The unzipped directory has the following structure:
 ```
 └── datasets
   └── graphs
