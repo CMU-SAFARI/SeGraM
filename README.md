@@ -16,13 +16,13 @@ All our prepared datasets can be downloaded from [this link](https://drive.googl
 
 ```
 └── datasets
-  └── graphs
-    └── gfa_files : our graph files (1 for each chromosome: 1-22, X, and Y) in GFA format
-    └── vg_files : our graph files (1 for each chromosome: 1-22, X, and Y) in VG format
-    └── gfa_files : our graph files (1 for each chromosome: 1-22, X, and Y) in FASTA format (i.e., each node of the entry has its own row so that we can use these files to generate the index files (.mmi) with minimap2)
-  └── reads
-    └── illumina_reads : our simulated short reads with 1% error rate and 100/150/250bp length
-    └── pacbio_ont_reads : our simulated 10k-length long reads with 5% and 10% error rates and different error profiles for PacBio and ONT
+    └── graphs
+        └── gfa_files : our graph files (1 for each chromosome: 1-22, X, and Y) in GFA format
+        └── vg_files : our graph files (1 for each chromosome: 1-22, X, and Y) in VG format
+        └── gfa_files : our graph files (1 for each chromosome: 1-22, X, and Y) in FASTA format (i.e., each node of the entry has its own row so that we can use these files to generate the index files (.mmi) with minimap2)
+    └── reads
+        └── illumina_reads : our simulated short reads with 1% error rate and 100/150/250bp length
+        └── pacbio_ont_reads : our simulated 10k-length long reads with 5% and 10% error rates and different error profiles for PacBio and ONT
 ```
 
 ## Citation
