@@ -8,7 +8,12 @@ In BitAlign, we design a new bitvector-based alignment approach, which is amenab
 
 ## Datasets
 
+We evaluate SeGraM using the latest major release of the human genome assembly, GRCh38, as the starting reference genome. To incorporate known genetic variations and thus form a genome graph, we use 7 VCF files for HG001-007 from the GIABproject (v3.3.2). Across the 24 graphs generated (one for each chromosome; 1–22, X, Y), in total, we have 20.4M nodes, 27.9 M edges, 3.1B sequence characters, and 7.1M variations. 
+
+For the read datasets, we generate four sets of long reads (i.e., PacBio and ONT datasets) using PBSIM2 and three sets of short reads (i.e., Illumina datasets) using Mason. For the PacBio and ONT datasets, we have reads of length 10kbp, each simulated with 5% and 10% error rates. The Illumina datasets have reads of length 100bp, 150bp, and 250bp, each simulated with a 1% error rate. Each dataset has 10,000 reads.
+
 All our prepared datasets can be downloaded from [this link](https://drive.google.com/file/d/18eSrcC1mCRCy9TUI2xvq8MH3mWykEunV/view?usp=sharing). The unzipped directory has the following structure:
+
 ```
 └── datasets
   └── graphs
