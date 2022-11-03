@@ -10,10 +10,10 @@ In BitAlign, we design a new bitvector-based alignment approach, which is amenab
 
 After MinSeed or any seeding tool determines the subgraphs to perform alignment for each query read, for each (read, subgraph) pair, BitAlign calculates the edit distance and the corresponding alignment between the two. In order to provide an efficient, hardware-friendly, and low-cost solution, we modify the sequence alignment algorithm of [GenASM](https://github.com/CMU-SAFARI/GenASM/), which is bitvector-based, to support sequence-to-graph alignment, and we exploit the bit-parallelism that the GenASM algorithm provides.
 
-### GenASM
+#### GenASM
 GenASM makes the bitvector-based Bitap algorithm suitable for efficient hardware implementation. GenASM shares a common characteristic with the well-known DP-based algorithms: both algorithms operate on tables. The key difference between GenASM-based alignment and DP-based alignment is that cell values are bitvectors in GenASM, whereas cell values are numerical values in DP-based algorithms. In GenASM, the rules for computing new cell values can be formulated as simple bitwise operations, which are particularly easy and cheap to implement in hardware. Unfortunately, GenASM is limited to sequence-to-sequence align- ment. We build on GenASM’s bitvector-based algorithm to develop our new sequence-to-graph alignment algorithm, BitAlign.
 
-### BitAlign
+#### BitAlign
 There is a major difference between sequence-to-sequence alignment and sequence-to-graph alignment: for the current character, sequence-to-sequence alignment needs to know about only the neighboring (i.e., previous/adjacent) text character, whereas sequence-to-graph alignment must incorporate non-neighboring characters as well whenever there is an edge (i.e., hop) from the current character to the non-neighboring character. To ensure that each of these data depen- dencies can be resolved as quickly as possible, we topologically sort the input graph during pre-processing.
 
 BitAlign starts with a linearized and topologically sorted input subgraph. This ensures that (1) we can iterate over each node of the input graph sequentially, and (2) all of the required bitvectors for the current iteration have already been generated in previous iterations. Besides the subgraph, BitAlign also takes the query read and the edit distance threshold (i.e., maximum number of edits to tolerate when performing approximate string matching) as inputs.
@@ -22,7 +22,7 @@ Similar to GenASM, as a pre-processing step, we generate four pattern bitmasks f
 
 Next, BitAlign iterates over each node of the linearized graph and retrieves the pattern bitmask for each node, based on the character stored in the current node. Unlike in GenASM, when computing three of the intermediate bitvectors (i.e., match, substitution, and deletion), BitAlign incorporates the hops as well by examining all successor nodes that the current node has. When calculating the deletion (𝐷), substitution (𝑆), and match (𝑀) bitvectors, we take the hops into consideration, whereas when calculating the insertion (𝐼) bitvector, we do not need to, since an insertion does not consume a character from the reference subgraph, but does so from the query read only. After computing all of these intermediate bitvectors, we store only the R[d] bitvector (i.e., ANDed version of the intermediate bitvectors) in memory. After completing all iterations, we perform traceback by traversing the stored bitvectors in the opposite direction to find the optimal alignment (based on the user-supplied alignment scoring function).
 
-### Implementation Details
+#### Implementation Details
 
 - To perform GenASM-like traceback, BitAlign stores 3(𝑘 + 1) bitvectors per graph edge (similar to how GenASM stores three out of the four intermediate vectors), where 𝑘 is the edit distance threshold. Since the number of edges in the graph can only be bounded very loosely, the potential memory footprint increases significantly, which is expensive to implement both in software and hardware. We solve this problem by storing only 𝑘 + 1 bitvectors per node (i.e., R[d] bitvectors), from which the 3(𝑘 + 1) bitvectors per edge can be regenerated on-demand during traceback. While this modification incurs small additional computational overhead, it decreases the memory footprint of the algorithm by at least 3×. Since the main area and power cost of the alignment hardware comes from memory, we find this trade-off favorable.
 
@@ -31,6 +31,16 @@ Next, BitAlign iterates over each node of the linearized graph and retrieves the
 - We implement the hop information between nodes of the graph as an adjacency matrix called HopBits. Based on the HopBits entry of the current text character, either the actual hop bitvector (if the HopBits entry is 1), or a bitvector containing all ones such that it will not have any effect on the bitwise operations (if the HopBits entry is 0), is used when calculating the match, deletion, and substitution bitvectors.
 
 - In order to decrease the size of the HopBits matrix, we also provide the option to limit the distance between the farthest node to take into account and the current node (i.e., hop limit).
+
+## Running SeGraM
+
+
+
+#### Limitations
+
+- The current implementation follows the divide-and-conquer approach, and does not have the ability to disable it.
+- The current implementation expects the start node and the start offset within the start node, along with the possible end node and the end offset within the end node to perform the alignment. In order to run BitAlign as a standalone tool without the need of an initial seeding approach, this requirement should be removed.
+- The current implementation expects the graph representation of the reference text to be generated using the `struct SeqNode* generateGraphFromGFA(char *filename, int *numNodes, int *numEdges)` function in `graph.c` file under `src/`.
 
 ## Datasets
 
