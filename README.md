@@ -34,7 +34,22 @@ Next, BitAlign iterates over each node of the linearized graph and retrieves the
 
 ## Running SeGraM
 
+Call the following two functions in `src/graph.c` and `src/align.c` files in your C code, respectively, or update the existing main() function in `src/main.c` file:
 
+```bash
+struct SeqNode* generateGraphFromGFA(char *filename, int *numNodes, int *numEdges)
+bitalign_aligner(struct SeqNode *nodes, char *pattern, int startNode, int startOffset, int endNode, int endOffset, int k, int hopLimit, int W, int O, int scoreM, int scoreS, int scoreOpen, int scoreExtend)
+```
+For example:
+
+```bash
+    int numNodes, numEdges;
+    
+    struct SeqNode *nodes = generateGraphFromGFA("test.gfa", &numNodes, &numEdges);
+    bitalign_aligner(nodes, "ACGTCATGCAGTCGTAACGTAGTCGTCACAGTCAGTCGTAGCTAGTA", 0, 0, 3, 41, 1, 5, 200, 0, 1, 1, 1, 1);
+    
+    deleteGraph(nodes, numNodes);
+```
 
 #### Limitations
 
