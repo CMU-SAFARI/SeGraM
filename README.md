@@ -46,12 +46,16 @@ For example:
 #include "graph.c"
 #include "align.c"
 
+...
+
 int numNodes, numEdges;
     
 struct SeqNode *nodes = generateGraphFromGFA("test.gfa", &numNodes, &numEdges);
 bitalign_aligner(nodes, "ACGTCATGCAGTCGTAACGTAGTCGTCACAGTCAGTCGTAGCTAGTA", 0, 0, 3, 41, 1, 5, 200, 0, 1, 1, 1, 1);
     
 deleteGraph(nodes, numNodes);
+
+...
 ```
 
 #### Limitations
