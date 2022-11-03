@@ -10,10 +10,10 @@ In BitAlign, we design a new bitvector-based alignment approach, which is amenab
 
 After MinSeed or any seeding tool determines the subgraphs to perform alignment for each query read, for each (read, subgraph) pair, BitAlign calculates the edit distance and the corresponding alignment between the two. In order to provide an efficient, hardware-friendly, and low-cost solution, we modify the sequence alignment algorithm of [GenASM](https://github.com/CMU-SAFARI/GenASM/), which is bitvector-based, to support sequence-to-graph alignment, and we exploit the bit-parallelism that the GenASM algorithm provides.
 
-### GenASM. 
+### GenASM
 GenASM makes the bitvector-based Bitap algorithm suitable for efficient hardware implementation. GenASM shares a common characteristic with the well-known DP-based algorithms: both algorithms operate on tables. The key difference between GenASM-based alignment and DP-based alignment is that cell values are bitvectors in GenASM, whereas cell values are numerical values in DP-based algorithms. In GenASM, the rules for computing new cell values can be formulated as simple bitwise operations, which are particularly easy and cheap to implement in hardware. Unfortunately, GenASM is limited to sequence-to-sequence align- ment. We build on GenASM’s bitvector-based algorithm to develop our new sequence-to-graph alignment algorithm, BitAlign.
 
-### BitAlign. 
+### BitAlign
 There is a major difference between sequence-to-sequence alignment and sequence-to-graph alignment: for the current character, sequence-to-sequence alignment needs to know about only the neighboring (i.e., previous/adjacent) text character, whereas sequence-to-graph alignment must incorporate non-neighboring characters as well whenever there is an edge (i.e., hop) from the current character to the non-neighboring character. To ensure that each of these data depen- dencies can be resolved as quickly as possible, we topologically sort the input graph during pre-processing.
 
 BitAlign starts with a linearized and topologically sorted input subgraph. This ensures that (1) we can iterate over each node of the input graph sequentially, and (2) all of the required bitvectors for the current iteration have already been generated in previous iterations. Besides the subgraph, BitAlign also takes the query read and the edit distance threshold (i.e., maximum number of edits to tolerate when performing approximate string matching) as inputs.
